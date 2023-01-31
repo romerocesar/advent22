@@ -1,0 +1,28 @@
+plan = '''move 1 from 2 to 1
+move 3 from 1 to 3
+move 2 from 2 to 1
+move 1 from 1 to 2
+'''
+stacks = ['ZN', 'MCD', 'P']
+stacks = [list(x) for x in stacks]
+
+with open('sample-plan.txt', 'w') as fp:
+    fp.write(plan)
+
+
+def move(amount, origin, destination):
+    print(amount, origin, destination)
+    for x in range(amount):
+        crate = stacks[origin].pop()
+        stacks[destination].append(crate)
+
+
+def run(fname):
+    for x in open(fname).readlines():
+        x = x.split(' ')
+        amount, origin, destination = int(x[1]), int(x[3])-1, int(x[5])-1
+        move(amount, origin, destination)
+    return ''.join([s[-1] for s in stacks])
+
+print(run('sample-plan.txt'))
+
