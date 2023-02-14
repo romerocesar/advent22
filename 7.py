@@ -32,6 +32,24 @@ class Node:
         return f'Node({self.name=}, {self.size=}, {self.children.keys=})'
 
 
+def find_candidate(node, th=0):
+    logger.debug(f'looking for {th=} starting from {node.name=} which is {node.size=}')
+    ans = node
+    if node.size < th:
+        logger.info(f'discarding {node.name=}. too small {node.size=} < {th=}')
+        return None
+    elif not node.children:
+        logger.info(f'found leaf {node.name=} with {node.size=}')
+        return None
+    else:
+        for k, v in node.children.items():
+            candidate = find_candidate(v, th)
+            if candidate and candidate.size < ans.size:
+                ans = candidate
+        logger.info(f'found candidate {node.name=} which is {node.size=}')
+        return ans
+
+
 def parse(fname):
     root = Node(name='/')
     current = root
@@ -65,6 +83,8 @@ root = parse(fname)
 total = 0
 root.post_order()
 logger.info(f'{total=}')
+directory = find_candidate(root, th=root.size-4e7)
+logger.info(f'{directory.name=}')
 
 
         
